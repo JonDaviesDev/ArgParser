@@ -6,6 +6,7 @@ int main(int argc, char** argv)
 
 	ap.Receiver(argc, argv);
 
-	
+	ap.AddArgument("-h", "--hello", "says hello to the user");
+
 	return 0;
 }

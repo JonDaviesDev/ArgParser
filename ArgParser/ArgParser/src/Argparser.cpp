@@ -1,7 +1,9 @@
 #include "argparser.h"
 
+
+
 ArgumentParser::ArgumentParser(const std::string& description)
-{}
+	: description(description) {}
 
 void ArgumentParser::Receiver(uint32_t argc, char** argv)
 {
@@ -14,24 +16,12 @@ void ArgumentParser::Receiver(uint32_t argc, char** argv)
 				// Need to decide whether to check only for flags that already exist, or just accept them all and filter through later.
 				// Saying that, it seems stupid to accept them... Im going to print an error if any flags are not recognised by the application.
 
-				argumentMap.insert(std::make_pair(argv[i], argv[i + 1]));
+				incomingArgMap.insert(std::make_pair(argv[i], argv[i + 1]));
 
 				i++;
 			}
 		} else continue;
 	}
-}
-
-template<typename T>
-inline void ArgumentParser::AddArgument(const std::string& longName, const std::string& help, T type)
-{
-	EnsureArgumentFormat(longName);
-}
-
-template<typename T>
-void ArgumentParser::AddArgument(const std::string& flag, const std::string& longName, const std::string& help, T type)
-{
-	EnsureArgumentFormat(longName, flag);
 }
 
 bool ArgumentParser::EnsureArgumentFormat(const std::string& longName, const std::string& shortName)
@@ -68,4 +58,5 @@ bool ArgumentParser::IsValidLength(const std::string& str, uint32_t requiredLeng
 		return true;
 	else return false;
 }
+
 
