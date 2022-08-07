@@ -1,6 +1,20 @@
 #include "argparser.h"
 
+//template <typename T>
+Argument::Argument()
+	: flag(0), longName(0), description(0) {}
 
+//template <typename T>
+Argument::Argument(const std::string& longName, const std::string& description)
+	: flag(0), longName(longName), description(description) {}
+
+//template <typename T>
+Argument::Argument(const std::string& flag, const std::string& longName, const std::string& description)
+	: flag(flag), longName(longName), description(description) {}
+
+//template <typename T>
+//Argument::Argument(const std::string& flag, const std::string& longName, const std::string& description/*, T type*/)
+//	: flag(flag), longName(longName), description(description)/*, type(type)*/ {}
 
 ArgumentParser::ArgumentParser(const std::string& description)
 	: description(description) {}
