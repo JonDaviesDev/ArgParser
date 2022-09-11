@@ -409,3 +409,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+ArgParser/.vs/ArgParser/v17
+ArgParser/ArgParser/x64
+ArgParser/lib-test/x64
+ArgParser/x64
+ArgParser/.vs
+ArgParser/ArgParser/x64
+ArgParser/lib-test/x64
+ArgParser/x64

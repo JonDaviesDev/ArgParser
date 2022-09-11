@@ -5,70 +5,59 @@
 #include <iostream>
 #include <algorithm>
 #include <cctype>
+#include <functional>
+#include <variant>
 
-//template <typename T>
-struct Argument
+struct UserDefinedArgument
 {
 	std::string flag;
 	std::string longName;
 	std::string description;
-	//T type;
 
-	/*template <typename T>*/ Argument();
-	/*template <typename T>*/ Argument(const std::string& longName, const std::string& description);
-	/*template <typename T>*/ Argument(const std::string& flag, const std::string& longName, const std::string& description);
-	/*template <typename T>*/ //Argument(const std::string& flag, const std::string& longName, const std::string& description/*, T type*/);
+	UserDefinedArgument();
+	UserDefinedArgument(const std::string& longName, const std::string& description);
+	UserDefinedArgument(const std::string& flag, const std::string& longName, const std::string& description);
 };
+
+
+struct IncomingArgument
+{
+	std::string flag;
+	std::variant<uint32_t, std::string, float> value;
+
+	IncomingArgument(const std::string& flag, std::variant<uint32_t, std::string, float> value);
+};
+
 
 class ArgumentParser
 {
 public:
 	//Methods
-	void Receiver(uint32_t argc, char** argv);
+	void StoreArgs(uint32_t argc, char** argv);
+	void CheckArgMap();
 
-	template<typename T>
-	void AddArgument(const std::string& longName, const std::string& help, T type = string&);
-
-	template<typename T>
-	void AddArgument(const std::string& flag, const std::string& longName, const std::string& help, T type = string&);
+	void AddUserDefinedArgument(const std::string& longName, const std::string& help);
+	void AddUserDefinedArgument(const std::string& flag, const std::string& longName, const std::string& help);
 
 private:
 	bool EnsureArgumentFormat(const std::string& longName, const std::string& shortName = "");
 	bool ContainsOnlyLetters(const std::string& str, uint32_t offset = 0);
 	bool IsValidLength(const std::string& str, uint32_t requiredLength);
+	bool ValidateArg(UserDefinedArgument arg);
 	
-
 private:
 	// Attributes
-	std::string description;
-
-	std::map<std::string, std::string> incomingArgMap;
-	std::vector<Argument> argumentList;
+	std::vector<IncomingArgument> argsFromCLI;
+	std::vector<UserDefinedArgument> userDefinedArgs;
 
 public:
 	//Constructors
-	ArgumentParser(const std::string& description = "");
+	ArgumentParser();
+	ArgumentParser(int argc, char** argv);
 
 
 	//Properties
+	std::vector<std::string> GetAllFlags();
+	std::vector<std::string> GetAllLongNames();
+	std::vector<std::string> GetAllHelpDescriptions();
 };
-
-
-//Template definitions
-
-
-
-
-template<typename T>
-void ArgumentParser::AddArgument(const std::string& longName, const std::string& help, T type)
-{
-	if (EnsureArgumentFormat(longName))
-		argumentList.push_back(Argument(longName, help));
-}
-
-template<typename T>
-void ArgumentParser::AddArgument(const std::string& flag, const std::string& longName, const std::string& help, T type)
-{
-	if (EnsureArgumentFormat(longName, flag))
-		argumentList.push_back(Argument(longName, help, flag));
-}

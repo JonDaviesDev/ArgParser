@@ -1,12 +1,20 @@
 #include "argparser.h"
 
+int PrintNum(int a) { return a; }
+
 int main(int argc, char** argv)
 {
+
+
 	ArgumentParser ap;
 
-	ap.Receiver(argc, argv);
+	ap.AddUserDefinedArgument("-h", "--hello", "says hello to the user");
+	ap.AddUserDefinedArgument("-g", "--goodbye", "says goodbye to the user");
+	ap.AddUserDefinedArgument("-f", "--force", "force stop");
 
-	ap.AddArgument("-h", "--hello", "says hello to the user");
+	ap.StoreArgs(argc, argv);
+	ap.CheckArgMap();
 
-	return 0;
+
+
 }

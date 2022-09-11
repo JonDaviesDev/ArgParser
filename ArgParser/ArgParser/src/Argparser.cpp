@@ -1,25 +1,65 @@
 #include "argparser.h"
 
-//template <typename T>
-Argument::Argument()
+UserDefinedArgument::UserDefinedArgument()
 	: flag(0), longName(0), description(0) {}
 
-//template <typename T>
-Argument::Argument(const std::string& longName, const std::string& description)
+UserDefinedArgument::UserDefinedArgument(const std::string& longName, const std::string& description)
 	: flag(0), longName(longName), description(description) {}
 
-//template <typename T>
-Argument::Argument(const std::string& flag, const std::string& longName, const std::string& description)
+UserDefinedArgument::UserDefinedArgument(const std::string& flag, const std::string& longName, const std::string& description)
 	: flag(flag), longName(longName), description(description) {}
 
-//template <typename T>
-//Argument::Argument(const std::string& flag, const std::string& longName, const std::string& description/*, T type*/)
-//	: flag(flag), longName(longName), description(description)/*, type(type)*/ {}
+IncomingArgument::IncomingArgument(const std::string& flag, std::variant<uint32_t, std::string, float> value)
+	: flag(flag), value(value) {}
 
-ArgumentParser::ArgumentParser(const std::string& description)
-	: description(description) {}
 
-void ArgumentParser::Receiver(uint32_t argc, char** argv)
+ArgumentParser::ArgumentParser() {}
+
+ArgumentParser::ArgumentParser(int argc, char** argv)
+{
+	StoreArgs(argc, argv);
+}
+
+
+
+
+// --PROPERTIES-------
+
+std::vector<std::string> ArgumentParser::GetAllFlags()
+{
+	std::vector<std::string> temp(userDefinedArgs.size());
+
+	for (UserDefinedArgument arg : userDefinedArgs)
+		temp.push_back(arg.flag);
+
+	return temp;
+}
+
+std::vector<std::string> ArgumentParser::GetAllLongNames()
+{
+	std::vector<std::string> temp(userDefinedArgs.size());
+
+	for (UserDefinedArgument arg : userDefinedArgs)
+		temp.push_back(arg.longName);
+
+	return temp;
+}
+
+std::vector<std::string> ArgumentParser::GetAllHelpDescriptions()
+{
+	std::vector<std::string> temp(userDefinedArgs.size());
+
+	for (UserDefinedArgument arg : userDefinedArgs)
+		temp.push_back(arg.description);
+
+	return temp;
+}
+
+// -------------------
+
+
+
+void ArgumentParser::StoreArgs(uint32_t argc, char** argv)
 {
 	for (int i = 0; i < argc; i++)
 	{
@@ -27,15 +67,30 @@ void ArgumentParser::Receiver(uint32_t argc, char** argv)
 		{
 			if ((std::string(argv[i]).find("-") != std::string::npos) or (std::string(argv[i]).find("--") != std::string::npos))
 			{
-				// Need to decide whether to check only for flags that already exist, or just accept them all and filter through later.
-				// Saying that, it seems stupid to accept them... Im going to print an error if any flags are not recognised by the application.
-
-				incomingArgMap.insert(std::make_pair(argv[i], argv[i + 1]));
+				argsFromCLI.push_back(IncomingArgument(argv[i], argv[i + 1]));
 
 				i++;
 			}
+
 		} else continue;
 	}
+}
+
+void ArgumentParser::CheckArgMap()
+{
+	for (UserDefinedArgument arg : userDefinedArgs)
+	{
+		//if (ValidateArg(arg))
+			//argsFromCLI.push_back(IncomingArgument(arg.flag);
+	}
+}
+
+bool ArgumentParser::ValidateArg(UserDefinedArgument arg)
+{
+	//if (std::find(argsFromCLI.begin(), argsFromCLI.end(), arg) != argsFromCLI.end())
+		//return true;
+	
+	return false;
 }
 
 bool ArgumentParser::EnsureArgumentFormat(const std::string& longName, const std::string& shortName)
@@ -45,15 +100,18 @@ bool ArgumentParser::EnsureArgumentFormat(const std::string& longName, const std
 
 	if (longName.starts_with("--") and ContainsOnlyLetters(longName, 2) and IsValidLength(longName, 5))
 		longNameValid = true;
+	else if (!longName.empty()) std::cerr << "'" + longName + "' is not a valid parameter.\n";
 
 	if (shortName.starts_with("-") and ContainsOnlyLetters(shortName, 1) and IsValidLength(shortName, 2))
 		shortNameValid = true;
+	else if (!shortName.empty()) std::cerr << "'" + shortName + "' is not a valid parameter.\n";
 
 	if (longNameValid == true and (!shortName.empty() and shortNameValid))
 		return true;
 	if (longNameValid == true and shortName.empty())
 		return true;
 
+	std::cerr << "Parameters have not been stored due to incorrect format entered by the user.\n";
 	return false;
 }
 
@@ -73,4 +131,15 @@ bool ArgumentParser::IsValidLength(const std::string& str, uint32_t requiredLeng
 	else return false;
 }
 
+void ArgumentParser::AddUserDefinedArgument(const std::string& longName, const std::string& help)
+{
+	if (EnsureArgumentFormat(longName))
+		userDefinedArgs.push_back(UserDefinedArgument(longName, help));
+}
+
+void ArgumentParser::AddUserDefinedArgument(const std::string& flag, const std::string& longName, const std::string& help)
+{
+	if (EnsureArgumentFormat(longName, flag))
+		userDefinedArgs.push_back(UserDefinedArgument(flag, longName, help));
+}
 
