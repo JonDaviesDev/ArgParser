@@ -1,3 +1,0 @@
-﻿  Argparser.cpp
-G:\argparser\ArgParser\ArgParser\src\Argparser.cpp(16,20): warning C4018: '<': signed/unsigned mismatch
-  ArgParser.vcxproj -> G:\argparser\ArgParser\x64\Debug\ArgParser.lib
