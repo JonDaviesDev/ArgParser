@@ -1,20 +1,15 @@
-#include "argparser.h"
-
-int PrintNum(int a) { return a; }
+#include "ArgManager.h"
 
 int main(int argc, char** argv)
 {
+	ArgManager ap;
 
-
-	ArgumentParser ap;
-
-	ap.AddUserDefinedArgument("-h", "--hello", "says hello to the user");
-	ap.AddUserDefinedArgument("-g", "--goodbye", "says goodbye to the user");
-	ap.AddUserDefinedArgument("-f", "--force", "force stop");
+	ap.AddUserDefinedArg("-h", "--hello", "says hello to the user");
+	ap.AddUserDefinedArg("-g", "--goodbye", "says goodbye to the user");
+	ap.AddUserDefinedArg("-f", "--force", "force stop");
 
 	ap.StoreArgs(argc, argv);
-	ap.CheckArgMap();
+	ap.ArgCheck();
 
-
-
+	std::vector<UserDefinedArg> temp = ap.GetAllActiveArgs();
 }

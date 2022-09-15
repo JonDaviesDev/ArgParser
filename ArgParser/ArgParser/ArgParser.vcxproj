@@ -143,10 +143,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\ArgParser.h" />
+    <ClInclude Include="src\ArgManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Argparser.cpp" />
+    <ClCompile Include="src\ArgManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
